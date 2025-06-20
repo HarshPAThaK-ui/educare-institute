@@ -1,0 +1,204 @@
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: aliceblue;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.logo{
+    font-size: 25px;
+    font-weight: 600;
+    color: #2a4875;
+}
+
+.logo a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #2a4875;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.nav-links a:hover {
+    color: #294074;
+}
+
+/* Admin Navigation Styles */
+.admin-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.admin-nav a {
+    background: #2c5aa0;
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.admin-nav a:hover {
+    background: #1e3f6b;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Student Navigation Styles */
+.student-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.student-nav a {
+    background: #28a745;
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.student-nav a:hover {
+    background: #218838;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.auth-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.logout-btn:hover {
+    color: #c82333;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .logo {
+        font-size: 18px;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: aliceblue;
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nav-links a {
+        width: 100%;
+        padding: 0.8rem;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 14px;
+    }
+
+    .nav-links a:last-child {
+        border-bottom: none;
+    }
+
+    .admin-nav,
+    .student-nav {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+    }
+
+    .admin-nav a,
+    .student-nav a {
+        width: 100%;
+        justify-content: flex-start;
+        border-radius: 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .auth-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+    }
+
+    .user-menu {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+    }
+
+    .logout-btn {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 0.8rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+}
