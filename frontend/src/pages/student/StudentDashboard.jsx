@@ -53,7 +53,7 @@ const StudentDashboard = () => {
     setLoadingNotes(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:5000/api/admin/notes?class=${className}`, {
+      const res = await fetch(`https://educare-institute.onrender.com/api/admin/notes?class=${className}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
