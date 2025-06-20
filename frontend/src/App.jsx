@@ -16,7 +16,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import { UserData } from "./context/UserContext";
 import { Toaster } from "react-hot-toast";
-import Loading from "./components/loading/loading";
+     import Loading from "./components/loading/Loading";
 
 const App = () => {
   const { isAuth, user, loading, userRole } = UserData();
