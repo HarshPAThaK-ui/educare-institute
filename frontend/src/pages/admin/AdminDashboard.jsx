@@ -47,7 +47,7 @@ const AdminDashboard = () => {
   const [noteFile, setNoteFile] = useState(null);
 
   // API Base URL
-  const API_BASE = 'http://localhost:5000/api/admin';
+  const API_BASE = 'https://educare-institute.onrender.com/api/admin';
 
   // Handle URL query parameters for tab navigation
   useEffect(() => {
@@ -169,7 +169,7 @@ const AdminDashboard = () => {
     setLoadingPending(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/admin/users/pending', {
+      const res = await fetch('https://educare-institute.onrender.com/api/admin/users/pending', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ const AdminDashboard = () => {
     setLoadingNotes(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/admin/notes', {
+      const res = await fetch('https://educare-institute.onrender.com/api/admin/notes', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -565,7 +565,7 @@ const AdminDashboard = () => {
 
   const handleDeleteNote = async (id) => {
     const token = localStorage.getItem('token');
-    const res = await fetch(`http://localhost:5000/api/admin/notes/${id}`, {
+    const res = await fetch(`https://educare-institute.onrender.com/api/admin/notes/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -585,8 +585,8 @@ const AdminDashboard = () => {
     const token = localStorage.getItem('token');
     const method = editingNoteId ? 'PUT' : 'POST';
     const url = editingNoteId
-      ? `http://localhost:5000/api/admin/notes/${editingNoteId}`
-      : 'http://localhost:5000/api/admin/notes';
+      ? `https://educare-institute.onrender.com/api/admin/notes/${editingNoteId}`
+      : 'https://educare-institute.onrender.com/api/admin/notes';
     const formData = new FormData();
     formData.append('title', noteForm.title);
     formData.append('class', noteForm.class);
@@ -609,7 +609,7 @@ const AdminDashboard = () => {
 
   const handleApproveUser = async (id) => {
     const token = localStorage.getItem('token');
-    const res = await fetch(`http://localhost:5000/api/admin/user/${id}/approve`, {
+    const res = await fetch(`https://educare-institute.onrender.com/api/admin/user/${id}/approve`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
