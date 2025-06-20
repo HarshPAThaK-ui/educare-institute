@@ -1,0 +1,471 @@
+.admin-account-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.account-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.account-header h1 {
+  color: #2c5aa0;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.account-header p {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.account-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: none;
+  background: #f8f9fa;
+  color: #666;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.tab-btn:hover {
+  background: #e9ecef;
+  color: #2c5aa0;
+}
+
+.tab-btn.active {
+  background: #2c5aa0;
+  color: white;
+}
+
+.account-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-height: 500px;
+}
+
+/* Profile Section */
+.profile-section h3 {
+  color: #2c5aa0;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.profile-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid #e9ecef;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  background: #2c5aa0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+}
+
+.profile-info h4 {
+  margin: 0 0 0.5rem;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.profile-info p {
+  margin: 0 0 1rem;
+  color: #666;
+}
+
+.role-badge.admin {
+  background: #2c5aa0;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.profile-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.detail-group {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.detail-group label {
+  display: block;
+  color: #2c5aa0;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.detail-group p {
+  margin: 0;
+  color: #333;
+  font-size: 1rem;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.edit-btn, .change-password-btn {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-btn {
+  background: #2c5aa0;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #1e3f6b;
+}
+
+.change-password-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.change-password-btn:hover {
+  background: #545b62;
+}
+
+/* System Overview Section */
+.system-overview h3 {
+  color: #2c5aa0;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.overview-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.overview-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.overview-icon {
+  width: 60px;
+  height: 60px;
+  background: #2c5aa0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.overview-content h4 {
+  color: #333;
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+}
+
+.overview-content p {
+  color: #666;
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.overview-btn {
+  background: #2c5aa0;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.overview-btn:hover {
+  background: #1e3f6b;
+}
+
+/* Quick Actions Section */
+.quick-actions-section h3 {
+  color: #2c5aa0;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.action-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.action-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-icon {
+  width: 50px;
+  height: 50px;
+  background: #2c5aa0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  margin: 0 auto 1rem;
+}
+
+.action-card h4 {
+  color: #333;
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.action-card p {
+  color: #666;
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.action-btn {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.action-btn.primary {
+  background: #2c5aa0;
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background: #1e3f6b;
+}
+
+.action-btn.secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.action-btn.secondary:hover {
+  background: #545b62;
+}
+
+/* Security Section */
+.security-section h3 {
+  color: #2c5aa0;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.security-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.security-card h4 {
+  color: #333;
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+}
+
+.security-item, .permission-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.security-item:last-child, .permission-item:last-child {
+  border-bottom: none;
+}
+
+.security-item span:first-child, .permission-item span:first-child {
+  color: #666;
+  font-weight: 500;
+}
+
+.security-item span:last-child, .permission-item span:last-child {
+  color: #333;
+  font-weight: 600;
+}
+
+.status-enabled {
+  color: #28a745 !important;
+}
+
+.permission-granted {
+  color: #28a745 !important;
+}
+
+.security-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.security-btn {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #2c5aa0;
+  background: white;
+  color: #2c5aa0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.security-btn:hover {
+  background: #2c5aa0;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-account-page {
+    padding: 1rem;
+  }
+  
+  .account-tabs {
+    flex-direction: column;
+  }
+  
+  .tab-btn {
+    justify-content: center;
+  }
+  
+  .profile-details {
+    grid-template-columns: 1fr;
+  }
+  
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .security-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-actions {
+    flex-direction: column;
+  }
+  
+  .security-actions {
+    flex-direction: column;
+  }
+} 
