@@ -25,11 +25,13 @@ app.use("/uploads", express.static("uploads"));
 import userRoutes from './routes/user.js';
 import courseRoutes from './routes/course.js';
 import adminRoutes from './routes/admin.js';
+import contactRoutes from './routes/contact.js';
 
 // using routes 
 app.use("/api", userRoutes);
 app.use("/api", courseRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api", contactRoutes);
 
 
 app.listen(port, () => {
