@@ -49,7 +49,7 @@ export const register = TryCatch(async (req, res) => {
              data
             );
         await sendMail(
-            'educareinstitutee@gmail.com',
+            process.env.ADMIN_EMAIL,
             'New Student Registration - Approval Needed',
             {
                 name,
@@ -225,7 +225,7 @@ export const submitContactForm = TryCatch(async (req, res) => {
     // Send email notification to admin
     try {
         await sendMail(
-            'educareinstitutee@gmail.com',
+            process.env.ADMIN_EMAIL,
             "New Contact Form Submission - Educare Institute",
             emailData
         );

@@ -143,7 +143,7 @@ const sendMail = async(email, subject, data) => {
     }
 
     await transport.sendMail({
-        from: 'educareinstitutee@gmail.com',
+        from: process.env.Gmail,
         to: email,
         subject,
         html,

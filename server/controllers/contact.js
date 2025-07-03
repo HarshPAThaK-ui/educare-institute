@@ -25,7 +25,7 @@ export const submitContact = TryCatch(async (req, res) => {
     // Send email notification
     try {
         await sendMail(
-            process.env.ADMIN_EMAIL || 'educareinstitutee@gmail.com',
+            process.env.ADMIN_EMAIL,
             `New Enquiry from ${name}`,
             {
                 name,
