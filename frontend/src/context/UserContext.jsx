@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { server } from "../main";
 import toast, { Toaster } from "react-hot-toast";
+import { API_BASE } from "../config/api";
 
 // Create context
 const UserContext = createContext();
@@ -18,7 +18,7 @@ export const UserContextProvider = ({ children }) => {
   async function loginUser(email, password, navigate, role = 'student') {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post(`${server}/api/user/login`, {
+      const { data } = await axios.post(`${API_BASE}/api/user/login`, {
         email,
         password,
         role, // Send role to backend
@@ -54,7 +54,7 @@ export const UserContextProvider = ({ children }) => {
   async function registerUser(name, email, password, navigate) {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post(`${server}/api/user/register`, {
+      const { data } = await axios.post(`${API_BASE}/api/user/register`, {
         name,
         email,
         password,
@@ -76,7 +76,7 @@ export const UserContextProvider = ({ children }) => {
     setBtnLoading(true);
     const activationToken = localStorage.getItem("activationToken");
     try {
-      const { data } = await axios.post(`${server}/api/user/verify`, {
+      const { data } = await axios.post(`${API_BASE}/api/user/verify`, {
         otp,
         activationToken,
       });
@@ -93,7 +93,7 @@ export const UserContextProvider = ({ children }) => {
   // Logout handler
   async function logoutUser(navigate) {
     try {
-      await axios.post(`${server}/api/user/logout`, {}, {
+      await axios.post(`${API_BASE}/api/user/logout`, {}, {
         headers: {
           token: localStorage.getItem("token"),
         },
@@ -124,7 +124,7 @@ export const UserContextProvider = ({ children }) => {
     }
 
     try {
-      const { data } = await axios.get(`${server}/api/user/me`, {
+      const { data } = await axios.get(`${API_BASE}/api/user/me`, {
         headers: {
           token: token,
         },

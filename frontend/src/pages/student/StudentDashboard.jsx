@@ -11,6 +11,7 @@ import StudentSidebar from './StudentSidebar';
 import SkeletonBlock from '../../components/skeleton/SkeletonBlock';
 import SkeletonCard from '../../components/skeleton/SkeletonCard';
 import SkeletonTableRow from '../../components/skeleton/SkeletonTableRow';
+import { API_BASE } from '../../config/api';
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -28,7 +29,7 @@ const StudentDashboard = () => {
       setLoadingUser(true);
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('/api/user/me', {
+        const res = await fetch(`${API_BASE}/api/user/me`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -53,8 +54,7 @@ const StudentDashboard = () => {
     setLoadingNotes(true);
     try {
       const token = localStorage.getItem('token');
-      const serverUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}`;
-      const res = await fetch(`${serverUrl}/api/admin/notes?class=${className}`, {
+      const res = await fetch(`${API_BASE}/api/admin/notes?class=${className}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ const StudentDashboard = () => {
     setLoadingSchedule(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`/api/classes?studentClass=${user?.studentClass || ''}`, {
+      const res = await fetch(`${API_BASE}/api/classes?studentClass=${user?.studentClass || ''}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -264,7 +264,7 @@ const StudentDashboard = () => {
                 <tr key={note._id}>
                   <td>{note.title}</td>
                   <td>
-                    <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${note.pdf.replace('\\', '/')}`} target="_blank" rel="noopener noreferrer">View PDF</a>
+                    <a href={`${API_BASE}/${note.pdf.replace('\\', '/')}`} target="_blank" rel="noopener noreferrer">View PDF</a>
                   </td>
                 </tr>
               ))}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./account.css";
 import { MdDashboard, MdSchool, MdSchedule, MdPerson, MdLogout } from "react-icons/md";
+import { API_BASE } from "../../config/api";
 
 const Account = ({ user }) => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -30,7 +31,7 @@ const Account = ({ user }) => {
     setSaving(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/user/profile', {
+      const res = await fetch(`${API_BASE}/api/user/profile`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -62,7 +63,7 @@ const Account = ({ user }) => {
     setPasswordSaving(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/user/change-password', {
+      const res = await fetch(`${API_BASE}/api/user/change-password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +88,7 @@ const Account = ({ user }) => {
   useEffect(() => {
     setLoadingEnrollments(true);
     const token = localStorage.getItem('token');
-    fetch('/api/course/my-enrollments', {
+    fetch(`${API_BASE}/api/course/my-enrollments`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },

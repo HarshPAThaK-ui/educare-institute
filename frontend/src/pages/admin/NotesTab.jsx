@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import NoteModal from './NoteModal';
 import SkeletonTableRow from '../../components/skeleton/SkeletonTableRow';
+import { API_BASE } from '../../config/api';
 
 const NotesTab = ({ notes, loading, createOrUpdateNote, deleteNote }) => {
   const [showNoteModal, setShowNoteModal] = useState(false);
@@ -115,7 +116,7 @@ const NotesTab = ({ notes, loading, createOrUpdateNote, deleteNote }) => {
                   <td>{note.title}</td>
                   <td>{note.class}</td>
                   <td>
-                    <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${note.pdf.replace('\\', '/')}`} target="_blank" rel="noopener noreferrer">View PDF</a>
+                    <a href={`${API_BASE}/${note.pdf.replace('\\', '/')}`} target="_blank" rel="noopener noreferrer">View PDF</a>
                   </td>
                   <td>
                     <button className="action-btn edit" onClick={() => handleEditNote(note)}>Edit</button>

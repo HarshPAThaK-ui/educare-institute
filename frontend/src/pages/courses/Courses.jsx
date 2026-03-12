@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './courses.css';
 import EnquiryModal from '../../components/EnquiryModal';
-import { server } from '../../main';
+import { API_BASE } from '../../config/api';
 
 const Courses = () => {
   const [programs, setPrograms] = useState([
@@ -64,7 +64,7 @@ const Courses = () => {
 
   const handleEnquirySubmit = async (formData) => {
     // Send to backend to trigger email
-    const response = await fetch(`${server}/api/contact/submit`, {
+    const response = await fetch(`${API_BASE}/api/contact/submit`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -1,4 +1,6 @@
-const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin`;
+import { API_BASE } from '../../config/api';
+
+const ADMIN_API_BASE = `${API_BASE}/api/admin`;
 
 class ApiError extends Error {
   constructor(message, status, data) {
@@ -52,7 +54,7 @@ const request = async (path, { method = 'GET', token, body, headers = {} } = {})
     options.headers['Content-Type'] = 'application/json';
   }
 
-  const response = await fetch(`${API_BASE}${path}`, options);
+  const response = await fetch(`${ADMIN_API_BASE}${path}`, options);
   return parseResponse(response);
 };
 
