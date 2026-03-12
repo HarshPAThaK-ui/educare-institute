@@ -22,33 +22,25 @@ export const submitContact = TryCatch(async (req, res) => {
         message: message || 'No message provided'
     });
 
-    let mailSent = false;
-
-    // Send email notification, but do not fail the enquiry if SMTP is misconfigured in production
-    try {
-        await sendMail(
-            process.env.ADMIN_EMAIL,
-            `New Enquiry from ${name}`,
-            {
-                name,
-                email: email || 'Not provided',
-                phone,
-                studentClass: studentClass || 'Not specified',
-                message: message || 'No message provided'
-            }
-        );
-        mailSent = true;
-    } catch (emailError) {
-        console.error('Email sending failed:', emailError);
-    }
-
     res.status(201).json({
         success: true,
-        message: mailSent
-            ? "Enquiry submitted successfully"
-            : "Enquiry submitted successfully, but email notification could not be sent",
-        mailSent,
+        message: "Enquiry submitted successfully",
         contact
+    });
+
+    // Fire and forget so a slow SMTP provider cannot block the public form response
+    sendMail(
+        process.env.ADMIN_EMAIL,
+        `New Enquiry from ${name}`,
+        {
+            name,
+            email: email || 'Not provided',
+            phone,
+            studentClass: studentClass || 'Not specified',
+            message: message || 'No message provided'
+        }
+    ).catch((emailError) => {
+        console.error('Email sending failed:', emailError);
     });
 });
 
