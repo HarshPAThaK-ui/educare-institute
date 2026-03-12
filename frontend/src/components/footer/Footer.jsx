@@ -7,23 +7,21 @@ import { IoLogoTwitter } from "react-icons/io";
 const Footer = () => {
   return (
     <footer>
-        <div className="footer-content">
-            <p>
-                &copy; Educare Institute 2025. All rights reserved. <br /> Made with ❤️ by Harsh Pathak
-            </p>
-            <div className="social-links">
-  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-    <FaFacebook />
-  </a>
-  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-    <FaSquareInstagram />
-  </a>
-  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-    <IoLogoTwitter />
-  </a>
-</div>
-
+      <div className="footer-content">
+        <p className="footer-title">&copy; Educare Institute 2025. All rights reserved.</p>
+        <p className="footer-credit">Designed and maintained by Harsh Pathak</p>
+        <div className="social-links">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <FaFacebook />
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <FaSquareInstagram />
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+            <IoLogoTwitter />
+          </a>
         </div>
+      </div>
     </footer>
   )
 }

@@ -2,6 +2,7 @@ import TryCatch from "../middlewares/TryCatch.js";
 import { Courses } from "../models/courses.js";
 import { Class } from "../models/class.js";
 import { rm } from "fs";
+import { extname } from "path";
 import { User } from "../models/User.js";
 import { Contact } from "../models/Contact.js";
 import bcrypt from 'bcrypt';
@@ -10,7 +11,6 @@ import { Note } from "../models/Note.js";
 // Course Management
 export const createCourse = TryCatch(async (req, res) => {
     const { title, description, category, duration, fee, schedule, batchSize, subjects, location } = req.body;
-    const image = req.file;
 
     await Courses.create({
         title,
@@ -21,8 +21,7 @@ export const createCourse = TryCatch(async (req, res) => {
         schedule,
         batchSize,
         subjects: Array.isArray(subjects) ? subjects : subjects.split(',').map(subject => subject.trim()),
-        location,
-        image: image?.path
+        location
     });
     res.status(201).json({
         message: "Course created successfully"
@@ -48,19 +47,11 @@ export const getAllCourses = TryCatch(async (req, res) => {
 
 export const updateCourse = TryCatch(async (req, res) => {
     const { title, description, category, duration, fee, schedule, batchSize, subjects, location } = req.body;
-    const image = req.file;
 
     const course = await Courses.findById(req.params.id);
     if (!course) {
         return res.status(404).json({
             message: "Course not found"
-        });
-    }
-
-    // Delete old image if new one is uploaded
-    if (image && course.image) {
-        rm(course.image, () => {
-            console.log("Old image deleted");
         });
     }
 
@@ -73,7 +64,6 @@ export const updateCourse = TryCatch(async (req, res) => {
     course.batchSize = batchSize || course.batchSize;
     course.subjects = subjects ? (Array.isArray(subjects) ? subjects : subjects.split(',').map(subject => subject.trim())) : course.subjects;
     course.location = location || course.location;
-    course.image = image?.path || course.image;
 
     await course.save();
 
@@ -96,14 +86,8 @@ export const deleteCourse = TryCatch(async (req, res) => {
 
     console.log('Deleting course:', course.title);
 
-    if (course.image) {
-        rm(course.image, () => {
-           console.log("Image Deleted Successfully");
-        });
-    }
-
-    await Class.find({course: req.params.id}).deleteMany();
-    await course.deleteOne();
+    await Class.find({course: req.params.id}).deleteMany(); //delete all the classes from the course
+    await course.deleteOne(); //delete course from db
     
     // Remove course from all user enrollments
     await User.updateMany({}, {
@@ -371,13 +355,17 @@ export const rejectUser = TryCatch(async (req, res) => {
 
 // Statistics
 export const getAllStats = TryCatch(async (req, res) => {
-    const totalCourses = (await Courses.find()).length;
-    const totalClasses = (await Class.find()).length;
-    const totalUsers = (await User.find({ role: 'student' })).length;
-    const totalEnrollments = (await User.aggregate([
-        { $unwind: "$enrollment" },
-        { $count: "total" }
-    ]))[0]?.total || 0;
+    const [totalCourses, totalClasses, totalUsers, enrollmentsAgg] = await Promise.all([
+        Courses.countDocuments(),
+        Class.countDocuments(),
+        User.countDocuments({ role: { $in: ['user', 'student'] } }),
+        User.aggregate([
+            { $unwind: "$enrollment" },
+            { $count: "total" }
+        ])
+    ]);
+
+    const totalEnrollments = enrollmentsAgg[0]?.total || 0;
 
     const stats = {
         totalCourses,
@@ -399,8 +387,36 @@ export const getAllContacts = TryCatch(async (req, res) => {
 });
 
 export const createNote = TryCatch(async (req, res) => {
-  const { title, content, class: className } = req.body;
-  const note = await Note.create({ title, content, class: className });
+  const { title, content, class: className, subject } = req.body;
+
+  if (!title || !content || !className) {
+    return res.status(400).json({ message: "Title, content and class are required" });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ message: "PDF file is required" });
+  }
+
+  const isPdfMime = req.file.mimetype === "application/pdf";
+  const isPdfExt = extname(req.file.originalname || "").toLowerCase() === ".pdf";
+  if (!isPdfMime || !isPdfExt) {
+    return res.status(400).json({ message: "Only PDF files are allowed" });
+  }
+
+  const maxPdfSize = 10 * 1024 * 1024; // 10MB
+  if (req.file.size > maxPdfSize) {
+    return res.status(400).json({ message: "PDF file size must be 10MB or less" });
+  }
+
+  const note = await Note.create({
+    title,
+    content,
+    class: className,
+    subject: subject || "",
+    pdf: req.file.path,
+    uploadedBy: req.user?._id,
+  });
+
   res.status(201).json({ message: "Note created successfully", note });
 });
 
@@ -413,12 +429,34 @@ export const getNotes = TryCatch(async (req, res) => {
 
 export const updateNote = TryCatch(async (req, res) => {
   const { id } = req.params;
-  const { title, content, class: className } = req.body;
+  const { title, content, class: className, subject } = req.body;
   const note = await Note.findById(id);
   if (!note) return res.status(404).json({ message: "Note not found" });
+
+  if (req.file) {
+    const isPdfMime = req.file.mimetype === "application/pdf";
+    const isPdfExt = extname(req.file.originalname || "").toLowerCase() === ".pdf";
+    if (!isPdfMime || !isPdfExt) {
+      return res.status(400).json({ message: "Only PDF files are allowed" });
+    }
+
+    const maxPdfSize = 10 * 1024 * 1024; // 10MB
+    if (req.file.size > maxPdfSize) {
+      return res.status(400).json({ message: "PDF file size must be 10MB or less" });
+    }
+  }
+
+  if (req.file) {
+    if (note.pdf) {
+      rm(note.pdf, () => {});
+    }
+    note.pdf = req.file.path;
+  }
+
   note.title = title || note.title;
   note.content = content || note.content;
   note.class = className || note.class;
+  note.subject = typeof subject === "string" ? subject : note.subject;
   await note.save();
   res.json({ message: "Note updated successfully", note });
 });
@@ -427,6 +465,9 @@ export const deleteNote = TryCatch(async (req, res) => {
   const { id } = req.params;
   const note = await Note.findById(id);
   if (!note) return res.status(404).json({ message: "Note not found" });
+  if (note.pdf) {
+    rm(note.pdf, () => {});
+  }
   await note.deleteOne();
   res.json({ message: "Note deleted successfully" });
 });

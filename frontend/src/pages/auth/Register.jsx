@@ -47,9 +47,11 @@ const Register = () => {
             {btnLoading ? "Registering... Please wait" : "Register"}
           </button>
         </form>
-        <p>
-          Have an account? <Link to="/login">Login</Link>
-        </p>
+        <div className="auth-alt-actions">
+          <p>
+            Have an account? <Link to="/login">Login</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

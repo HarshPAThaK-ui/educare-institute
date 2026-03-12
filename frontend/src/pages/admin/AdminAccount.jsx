@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./adminAccount.css";
+import { motion } from "framer-motion";
 import { MdDashboard, MdSchool, MdPeople, MdSchedule, MdSettings, MdPerson, MdEmail, MdPhone, MdLocationOn, MdEdit, MdSecurity } from "react-icons/md";
 import { UserData } from "../../context/UserContext";
 import toast from "react-hot-toast";
@@ -7,9 +8,14 @@ import toast from "react-hot-toast";
 const AdminAccount = ({ user }) => {
   const [activeTab, setActiveTab] = useState('profile');
   const { logoutUser } = UserData();
+  const sectionMotion = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.25 },
+  };
 
   const renderProfile = () => (
-    <div className="profile-section">
+    <motion.div className="profile-section" {...sectionMotion}>
       <h3><MdPerson /> Admin Profile</h3>
       <div className="profile-card">
         <div className="profile-header">
@@ -59,11 +65,11 @@ const AdminAccount = ({ user }) => {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   const renderSystemOverview = () => (
-    <div className="system-overview">
+    <motion.div className="system-overview" {...sectionMotion}>
       <h3><MdDashboard /> System Overview</h3>
       <div className="overview-grid">
         <div className="overview-card">
@@ -118,11 +124,11 @@ const AdminAccount = ({ user }) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   const renderQuickActions = () => (
-    <div className="quick-actions-section">
+    <motion.div className="quick-actions-section" {...sectionMotion}>
       <h3><MdDashboard /> Quick Actions</h3>
       <div className="actions-grid">
         <div className="action-card">
@@ -169,11 +175,11 @@ const AdminAccount = ({ user }) => {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   const renderSecurity = () => (
-    <div className="security-section">
+    <motion.div className="security-section" {...sectionMotion}>
       <h3><MdSecurity /> Security & Access</h3>
       <div className="security-grid">
         <div className="security-card">
@@ -216,7 +222,7 @@ const AdminAccount = ({ user }) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   return (

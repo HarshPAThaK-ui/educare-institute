@@ -37,7 +37,11 @@ export const submitContact = TryCatch(async (req, res) => {
         );
     } catch (emailError) {
         console.error('Email sending failed:', emailError);
-        // Don't fail the request if email fails
+        return res.status(500).json({
+            success: false,
+            message: "Email sending failed",
+            error: emailError.message || emailError
+        });
     }
 
     res.status(201).json({

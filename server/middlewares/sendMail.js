@@ -12,8 +12,72 @@ const sendMail = async(email, subject, data) => {
 
     let html;
     
-    // Check if this is a contact form submission
-    if (data.phone && data.studentClass !== undefined) {
+    // Checking if this is an admin notification
+    if (data.message && data.studentClass === undefined && !data.otp) {
+        // Admin notification template
+        html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Student Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #2c5aa0;
+            margin-bottom: 20px;
+        }
+        .field {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .field strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .field p {
+            margin: 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>New Student Registration - Approval Needed</h1>
+        <div class="field">
+            <strong>Name:</strong>
+            <p>${data.name}</p>
+        </div>
+        <div class="field">
+            <strong>Email:</strong>
+            <p>${data.email}</p>
+        </div>
+        <div class="field">
+            <strong>Message:</strong>
+            <p>${data.message}</p>
+        </div>
+    </div>
+</body>
+</html>`;
+    } 
+    // Checking if this is a contact form submission
+    else if (data.phone && data.studentClass !== undefined) {
         // Contact form submission template
         html = `<!DOCTYPE html>
 <html lang="en">

@@ -1,0 +1,102 @@
+.auth-layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 20%, rgba(129, 140, 248, 0.14) 0%, rgba(129, 140, 248, 0) 48%),
+    radial-gradient(circle at 18% 84%, rgba(96, 165, 250, 0.14) 0%, rgba(96, 165, 250, 0) 52%),
+    #f8fbff;
+}
+
+.auth-layout-glow {
+  position: absolute;
+  width: min(72vw, 760px);
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  top: -36%;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(96, 165, 250, 0.05) 42%, rgba(255, 255, 255, 0) 72%);
+}
+
+.auth-layout-card {
+  width: min(100%, 420px);
+  border-radius: 20px;
+  padding: 28px;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 20px 45px rgba(15, 23, 42, 0.1),
+    0 6px 16px rgba(15, 23, 42, 0.06);
+}
+
+.auth-layout-brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.1rem;
+}
+
+.auth-layout-logo {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #111827;
+}
+
+.auth-layout-logo-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #6366f1 0%, #60a5fa 100%);
+}
+
+.auth-layout-logo-text {
+  font-size: 0.93rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.auth-layout-card .auth-page {
+  min-height: auto;
+  display: block;
+  align-items: unset;
+  justify-content: unset;
+  background: transparent;
+  padding: 0;
+}
+
+.auth-layout-card .auth-form {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  width: 100%;
+  max-width: none;
+}
+
+@media (max-width: 640px) {
+  .auth-layout {
+    padding: 16px;
+  }
+
+  .auth-layout-card {
+    padding: 22px 18px;
+    border-radius: 18px;
+  }
+}

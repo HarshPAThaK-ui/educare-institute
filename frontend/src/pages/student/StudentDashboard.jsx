@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './studentDashboard.css';
+import { AnimatePresence, motion } from 'framer-motion';
 import { 
   MdDashboard, 
   MdSchool, 
-  MdSchedule, 
-  MdPerson, 
-  MdBook,
-  MdNotifications,
-  MdCalendarToday,
-  MdLocationOn,
-  MdAccessTime
+  MdSchedule
 } from 'react-icons/md';
+import DashboardLayout from '../../layouts/DashboardLayout';
+import StudentSidebar from './StudentSidebar';
+import SkeletonBlock from '../../components/skeleton/SkeletonBlock';
+import SkeletonCard from '../../components/skeleton/SkeletonCard';
+import SkeletonTableRow from '../../components/skeleton/SkeletonTableRow';
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -53,7 +53,8 @@ const StudentDashboard = () => {
     setLoadingNotes(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`https://educare-institute.onrender.com/api/admin/notes?class=${className}`, {
+      const serverUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}`;
+      const res = await fetch(`${serverUrl}/api/admin/notes?class=${className}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -116,7 +117,11 @@ const StudentDashboard = () => {
             <MdSchool />
           </div>
           <div className="stat-content">
-            <h3>{loadingUser ? '-' : user && user.enrollment ? user.enrollment.length : 0}</h3>
+            <h3>
+              {loadingUser
+                ? <SkeletonBlock width={28} height={28} />
+                : user && user.enrollment ? user.enrollment.length : 0}
+            </h3>
             <p>Enrolled Courses</p>
           </div>
         </div>
@@ -125,7 +130,11 @@ const StudentDashboard = () => {
             <MdSchedule />
           </div>
           <div className="stat-content">
-            <h3>{loadingSchedule || user && user.enrollment && user.enrollment.length === 0 ? 0 : schedule.length}</h3>
+            <h3>
+              {loadingSchedule
+                ? <SkeletonBlock width={28} height={28} />
+                : user && user.enrollment && user.enrollment.length === 0 ? 0 : schedule.length}
+            </h3>
             <p>Classes This Week</p>
           </div>
         </div>
@@ -137,7 +146,11 @@ const StudentDashboard = () => {
     <div className="courses-section">
       <h3>My Enrolled Courses</h3>
       {loadingUser ? (
-        <div>Loading courses...</div>
+        <div className="courses-grid">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <SkeletonCard key={`student-courses-skeleton-${index}`} />
+          ))}
+        </div>
       ) : !user || !user.enrollment || user.enrollment.length === 0 ? (
         <div>No courses assigned yet. Please contact your admin.</div>
       ) : (
@@ -167,7 +180,11 @@ const StudentDashboard = () => {
     <div className="schedule-section">
       <h3>My Schedule</h3>
       {loadingSchedule ? (
-        <div>Loading schedule...</div>
+        <div className="classes-grid">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <SkeletonCard key={`student-schedule-skeleton-${index}`} />
+          ))}
+        </div>
       ) : user && user.enrollment && user.enrollment.length === 0 ? (
         <div>No schedule available. Please contact your admin.</div>
       ) : schedule.length === 0 ? (
@@ -216,7 +233,21 @@ const StudentDashboard = () => {
         </select>
       </div>
       {loadingNotes ? (
-        <div className="loading">Loading notes...</div>
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>PDF</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <SkeletonTableRow key={`student-notes-skeleton-${index}`} />
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : notes.length === 0 ? (
         <div>No notes available for this class.</div>
       ) : (
@@ -233,7 +264,7 @@ const StudentDashboard = () => {
                 <tr key={note._id}>
                   <td>{note.title}</td>
                   <td>
-                    <a href={`/${note.pdf.replace('\\', '/')}`} target="_blank" rel="noopener noreferrer">View PDF</a>
+                    <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${note.pdf.replace('\\', '/')}`} target="_blank" rel="noopener noreferrer">View PDF</a>
                   </td>
                 </tr>
               ))}
@@ -246,42 +277,40 @@ const StudentDashboard = () => {
 
   return (
     <div className="student-dashboard">
-      <div className="dashboard-header">
-        <h1><MdDashboard /> Student Dashboard</h1>
-        <p>Track your progress and manage your studies</p>
-      </div>
-      <div className="dashboard-tabs">
-        <button 
-          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          <MdDashboard /> Overview
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'courses' ? 'active' : ''}`}
-          onClick={() => setActiveTab('courses')}
-        >
-          <MdSchool /> My Courses
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
-          onClick={() => setActiveTab('schedule')}
-        >
-          <MdSchedule /> Schedule
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'notes' ? 'active' : ''}`}
-          onClick={() => setActiveTab('notes')}
-        >
-          Notes
-        </button>
-      </div>
-      <div className="dashboard-content">
-        {activeTab === 'overview' && renderOverview()}
-        {activeTab === 'courses' && renderMyCourses()}
-        {activeTab === 'schedule' && renderSchedule()}
-        {activeTab === 'notes' && renderNotesTab()}
-      </div>
+      <DashboardLayout
+        sidebar={({ setSidebarOpen }) => (
+          <StudentSidebar
+            activeTab={activeTab}
+            onTabChange={(tab) => {
+              setActiveTab(tab);
+              if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                setSidebarOpen(false);
+              }
+            }}
+          />
+        )}
+      >
+        <div className="dashboard-header">
+          <h1><MdDashboard /> Student Dashboard</h1>
+          <p>Track your progress and manage your studies</p>
+        </div>
+        <div className="dashboard-content">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              {activeTab === 'overview' && renderOverview()}
+              {activeTab === 'courses' && renderMyCourses()}
+              {activeTab === 'schedule' && renderSchedule()}
+              {activeTab === 'notes' && renderNotesTab()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </DashboardLayout>
     </div>
   );
 };

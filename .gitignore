@@ -1,1 +1,4 @@
-  server/.env
+server/.env
+frontend/.env.production
+server/node_modules/
+server/uploads/

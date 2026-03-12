@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./auth.css";
-import { Link, useNavigate } from "react-router-dom";
-import e from "cors";
+import { useNavigate } from "react-router-dom";
 import { UserData } from "../../context/UserContext";
+import { MdMarkEmailRead } from "react-icons/md";
 
 const Verify = () => {
 
@@ -17,21 +17,25 @@ const Verify = () => {
   }
   return (
     <div className="auth-page">
-      <div className="auth-form">
-        <h2>Verify Your Account</h2>
-        <form onSubmit = {submitHandler}>
+      <div className="auth-form verify-form">
+        <div className="verify-icon" aria-hidden="true">
+          <MdMarkEmailRead />
+        </div>
+        <h2 className="verify-title">Verify Your Account</h2>
+        <p className="verify-subtitle">Enter the OTP sent to your email to continue.</p>
+        <form onSubmit={submitHandler}>
           <label htmlFor="otp">OTP</label>
           <input
             type="number"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
+            placeholder="Enter 6-digit OTP"
             required
           />
-          <button disabled={btnLoading} type="submit" className="common-btn">{btnLoading?"Please Wait..." : "Verify"}</button>
+          <button disabled={btnLoading} type="submit" className="common-btn student-btn">
+            {btnLoading ? "Please Wait..." : "Verify Account"}
+          </button>
         </form>
-        <p>
-          Go to <Link to="/login">Login</Link> page
-        </p>
       </div>
     </div>
   );
