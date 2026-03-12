@@ -22,7 +22,9 @@ export const submitContact = TryCatch(async (req, res) => {
         message: message || 'No message provided'
     });
 
-    // Send email notification
+    let mailSent = false;
+
+    // Send email notification, but do not fail the enquiry if SMTP is misconfigured in production
     try {
         await sendMail(
             process.env.ADMIN_EMAIL,
@@ -35,18 +37,17 @@ export const submitContact = TryCatch(async (req, res) => {
                 message: message || 'No message provided'
             }
         );
+        mailSent = true;
     } catch (emailError) {
         console.error('Email sending failed:', emailError);
-        return res.status(500).json({
-            success: false,
-            message: "Email sending failed",
-            error: emailError.message || emailError
-        });
     }
 
     res.status(201).json({
         success: true,
-        message: "Enquiry submitted successfully",
+        message: mailSent
+            ? "Enquiry submitted successfully"
+            : "Enquiry submitted successfully, but email notification could not be sent",
+        mailSent,
         contact
     });
 });

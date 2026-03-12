@@ -14,6 +14,10 @@ dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+].filter(Boolean);
 
 app.set('trust proxy', 1);
 
@@ -21,11 +25,21 @@ app.set('trust proxy', 1);
 app.use(express.json());
 app.use(
   cors({
-    origin: [
-      'https://educare-institute.vercel.app',
-      'https://educare-institute-reyv.vercel.app',
-      'http://localhost:5173',
-    ],
+    origin(origin, callback) {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/.*\.vercel\.app$/.test(origin);
+
+      if (isAllowed) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
   })
 );

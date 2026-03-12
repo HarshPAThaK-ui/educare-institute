@@ -1,9 +1,18 @@
 import {createTransport} from 'nodemailer'
 
 const sendMail = async(email, subject, data) => {
+    if (!process.env.Gmail || !process.env.Password) {
+        throw new Error('SMTP credentials are missing');
+    }
+
+    if (!email) {
+        throw new Error('Recipient email is missing');
+    }
+
     const transport = createTransport({
         host: "smtp.gmail.com",
         port: 465,
+        secure: true,
         auth: {
             user: process.env.Gmail,
             pass: process.env.Password,
