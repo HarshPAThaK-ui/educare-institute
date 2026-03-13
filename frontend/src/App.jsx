@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/home/Home";
@@ -23,6 +23,21 @@ import Loading from "./components/loading/Loading";
 
 const App = () => {
   const { isAuth, user, loading, userRole } = UserData();
+
+  useEffect(() => {
+    window.$crisp = window.$crisp || [];
+    window.CRISP_WEBSITE_ID = "a1370ffa-f301-4be3-8aa5-1a617f943625";
+
+    if (document.getElementById("crisp-chat-script")) {
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = "crisp-chat-script";
+    script.src = "https://client.crisp.chat/l.js";
+    script.async = true;
+    document.head.appendChild(script);
+  }, []);
 
   return (
     <>
