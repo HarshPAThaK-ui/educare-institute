@@ -16,6 +16,10 @@ const app = express();
 const port = Number(process.env.PORT) || 5000;
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  ...(process.env.FRONTEND_URLS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean),
   'http://localhost:5173',
 ].filter(Boolean);
 
@@ -32,7 +36,8 @@ app.use(
 
       const isAllowed =
         allowedOrigins.includes(origin) ||
-        /^https:\/\/.*\.vercel\.app$/.test(origin);
+        /^https:\/\/.*\.vercel\.app$/.test(origin) ||
+        /^https:\/\/.*\.netlify\.app$/.test(origin);
 
       if (isAllowed) {
         return callback(null, true);

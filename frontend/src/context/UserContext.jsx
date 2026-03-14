@@ -6,6 +6,20 @@ import { API_BASE } from "../config/api";
 // Create context
 const UserContext = createContext();
 
+const getErrorMessage = (error, fallbackMessage) => {
+  if (axios.isAxiosError(error)) {
+    return (
+      error.response?.data?.message ||
+      (error.request
+        ? "Cannot reach the server. Check the deployed API URL and CORS settings."
+        : error.message) ||
+      fallbackMessage
+    );
+  }
+
+  return fallbackMessage;
+};
+
 // Context Provider component
 export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState([]);
@@ -46,7 +60,7 @@ export const UserContextProvider = ({ children }) => {
       if (error?.response?.status === 403) {
         toast.error(error?.response?.data?.message || "Access denied. Please use the correct login portal.");
       } else {
-        toast.error(error?.response?.data?.message || "Login failed");
+        toast.error(getErrorMessage(error, "Login failed"));
       }
     }
   }
@@ -68,7 +82,7 @@ export const UserContextProvider = ({ children }) => {
       navigate("/verify");
     } catch (error) {
       setBtnLoading(false);
-     toast.error(error.response.data.message || "Registration failed");
+      toast.error(getErrorMessage(error, "Registration failed"));
     }
   }
 
@@ -86,7 +100,7 @@ export const UserContextProvider = ({ children }) => {
       setBtnLoading(false);
     } catch (error) {
       setBtnLoading(false);
-     toast.error(error.response.data.message);
+      toast.error(getErrorMessage(error, "OTP verification failed"));
     }
   }
 

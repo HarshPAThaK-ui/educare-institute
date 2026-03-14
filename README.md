@@ -82,11 +82,15 @@ Config file:
 Frontend:
 
 - `VITE_API_URL` should point to the backend base URL, for example `http://localhost:5000`
+- If `VITE_API_URL` is missing, the frontend now falls back to same-origin requests like `/api/...`
 
 Backend:
 
 - Keep secrets in `server/.env`
 - `server/.env` is ignored from git
+- Required backend env vars for registration: `DB`, `Jwt_Sec`, `Activation_Secret`, `Gmail`, `Password`, `ADMIN_EMAIL`
+- Set `FRONTEND_URL` to your deployed frontend URL
+- If you have multiple frontend domains, use `FRONTEND_URLS` as a comma-separated list
 
 ## Repository Hygiene
 
