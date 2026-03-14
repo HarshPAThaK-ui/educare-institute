@@ -1,20 +1,11 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 import validator from 'validator';
 import { User } from '../models/User.js';
 import { env } from '../config/env.js';
 import { AppError, asyncHandler } from '../middlewares/errorHandler.js';
-
-const mailTransport = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: env.smtpUser,
-    pass: env.smtpPass,
-  },
-});
+import sendMail from '../middlewares/sendMail.js';
 
 const sanitizeUser = (user) => {
   const userObject = typeof user.toObject === 'function' ? user.toObject() : user;
@@ -33,36 +24,36 @@ const sanitizeUser = (user) => {
   };
 };
 
-const createActivationToken = (userId) =>
-  jwt.sign({ sub: userId }, env.activationSecret, { expiresIn: '1d' });
+const OTP_EXPIRY_MS = 10 * 60 * 1000;
+
+const createOtpToken = (userId, otp) =>
+  jwt.sign({ sub: userId, otp: String(otp) }, env.activationSecret, {
+    expiresIn: '10m',
+  });
 
 const createAccessToken = (user) =>
   jwt.sign({ sub: user._id, role: user.role }, env.jwtSecret, {
     expiresIn: '7d',
   });
 
-const sendActivationEmail = async (user, activationToken) => {
-  const activationLink = `${env.clientUrl}/activate/${activationToken}`;
+const sendOtpEmail = async (user, otp) => {
+  await sendMail(user.email, 'Educare Institute OTP Verification', {
+    name: user.name,
+    otp: String(otp),
+  });
+};
 
-  await mailTransport.sendMail({
-    from: env.smtpUser,
-    to: user.email,
-    subject: 'Activate your Educare Institute account',
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Activate your account</h2>
-        <p>Hello ${user.name},</p>
-        <p>Thanks for registering. Please activate your account by clicking the link below:</p>
-        <p>
-          <a href="${activationLink}" target="_blank" rel="noopener noreferrer">
-            Activate Account
-          </a>
-        </p>
-        <p>If the button does not work, use this link:</p>
-        <p>${activationLink}</p>
-        <p>This link will expire in 24 hours.</p>
-      </div>
-    `,
+const sendAdminRegistrationAlert = async (user) => {
+  const adminEmail = process.env.ADMIN_EMAIL || env.smtpUser;
+
+  if (!adminEmail) {
+    return;
+  }
+
+  await sendMail(adminEmail, 'New Student Registration - Approval Needed', {
+    name: user.name,
+    email: user.email,
+    message: `A new student has registered and completed OTP verification.\n\nName: ${user.name}\nEmail: ${user.email}\nPlease log in to the admin portal to approve or reject this student.`,
   });
 };
 
@@ -98,13 +89,16 @@ export const register = asyncHandler(async (req, res) => {
     );
   }
 
-  const existingUser = await User.findOne({ email }).select('+activationToken');
+  const existingUser = await User.findOne({ email }).select(
+    '+activationToken +password'
+  );
 
   if (existingUser?.isVerified) {
     throw new AppError('User already exists. Please log in instead.', 409);
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);
+  const otp = crypto.randomInt(100000, 1000000);
 
   let user = existingUser;
   if (user) {
@@ -123,24 +117,26 @@ export const register = asyncHandler(async (req, res) => {
     });
   }
 
-  const activationToken = createActivationToken(user._id);
+  const activationToken = createOtpToken(user._id, otp);
   user.activationToken = activationToken;
-  user.activationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  user.activationTokenExpires = new Date(Date.now() + OTP_EXPIRY_MS);
   await user.save();
 
-  await sendActivationEmail(user, activationToken);
+  await sendOtpEmail(user, otp);
 
-  res.status(201).json({
-    message: 'Registration successful. Please check your email to activate your account.',
+  res.status(200).json({
+    message: 'OTP sent to your email. Please verify your account.',
+    activationToken,
     user: sanitizeUser(user),
   });
 });
 
-export const activateAccount = asyncHandler(async (req, res) => {
-  const { token } = req.params;
+export const verifyOtp = asyncHandler(async (req, res) => {
+  const token = req.body.activationToken?.trim();
+  const otp = req.body.otp?.toString().trim();
 
-  if (!token) {
-    throw new AppError('Activation token is required.', 400);
+  if (!token || !otp) {
+    throw new AppError('OTP and activation token are required.', 400);
   }
 
   let payload;
@@ -153,12 +149,12 @@ export const activateAccount = asyncHandler(async (req, res) => {
   const user = await User.findById(payload.sub).select('+activationToken');
 
   if (!user) {
-    throw new AppError('User not found for this activation token.', 404);
+    throw new AppError('User not found for this OTP request.', 404);
   }
 
   if (user.isVerified) {
     return res.status(200).json({
-      message: 'Account is already activated. You can log in now.',
+      message: 'Account already verified. Please wait for admin approval.',
     });
   }
 
@@ -170,13 +166,19 @@ export const activateAccount = asyncHandler(async (req, res) => {
     throw new AppError('Activation token is invalid or has expired.', 400);
   }
 
+  if (String(payload.otp) !== otp) {
+    throw new AppError('Invalid OTP.', 400);
+  }
+
   user.isVerified = true;
   user.activationToken = undefined;
   user.activationTokenExpires = undefined;
   await user.save();
 
+  await sendAdminRegistrationAlert(user);
+
   res.status(200).json({
-    message: 'Account activated successfully. You can now log in.',
+    message: 'Account verified successfully. Awaiting admin approval.',
   });
 });
 
@@ -199,7 +201,14 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   if (!user.isVerified) {
-    throw new AppError('Please activate your account before logging in.', 403);
+    throw new AppError('Please verify the OTP sent to your email before logging in.', 403);
+  }
+
+  if (user.role !== 'admin' && user.status !== 'approved') {
+    throw new AppError(
+      'Your registration is pending approval by the admin. Please wait for confirmation.',
+      403
+    );
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);

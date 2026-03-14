@@ -1,16 +1,16 @@
 import express from 'express';
 import {
-  activateAccount,
   login,
   me,
   register,
+  verifyOtp,
 } from '../controllers/authController.js';
 import { isAuth } from '../middlewares/isAuth.js';
 
 const router = express.Router();
 
 router.post('/register', register);
-router.get('/activate/:token', activateAccount);
+router.post('/verify', verifyOtp);
 router.post('/login', login);
 router.get('/me', isAuth, me);
 
