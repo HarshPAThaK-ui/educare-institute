@@ -1,15 +1,10 @@
 import mongoose from 'mongoose';
 import winston from 'winston';
+import { env } from '../config/env.js';
 
 export const connectDB = async () => {
-  if (!process.env.DB) {
-    const error = new Error('DB connection string is missing');
-    winston.error(error.message);
-    throw error;
-  }
-
   try {
-    await mongoose.connect(process.env.DB);
+    await mongoose.connect(env.mongoUri);
     winston.info('MongoDB connected');
   } catch (error) {
     winston.error('MongoDB connection error:', error);

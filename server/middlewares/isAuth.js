@@ -1,14 +1,9 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
+import { env } from "../config/env.js";
+import { AppError, asyncHandler } from "./errorHandler.js";
 
-export const isAuth = async (req, res, next) => {
-  try {
-    if (!process.env.Jwt_Sec) {
-      return res.status(500).json({
-        message: "Server configuration error: JWT secret is missing.",
-      });
-    }
-
+export const isAuth = asyncHandler(async (req, res, next) => {
     // Check for token in Authorization header (Bearer token)
     const authHeader = req.headers.authorization;
     let token;
@@ -21,34 +16,25 @@ export const isAuth = async (req, res, next) => {
     }
 
     if (!token) {
-      return res.status(401).json({
-        message: "Please login first",
-      });
+      throw new AppError("Please login first.", 401);
     }
 
-    const decodedData = jwt.verify(token, process.env.Jwt_Sec);
-    const user = await User.findById(decodedData._id);
+    let decodedData;
+    try {
+      decodedData = jwt.verify(token, env.jwtSecret);
+    } catch (error) {
+      throw new AppError("Invalid or expired token.", 401);
+    }
+
+    const user = await User.findById(decodedData.sub || decodedData._id);
 
     if (!user) {
-      return res.status(401).json({
-        message: "User not found or token is invalid",
-      });
+      throw new AppError("User not found or token is invalid.", 401);
     }
 
     req.user = user;
     next();
-  } catch (error) {
-    if (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") {
-      return res.status(401).json({
-        message: "Invalid or expired token",
-      });
-    }
-
-    return res.status(500).json({
-      message: "Authentication middleware failed",
-    });
-  }
-};
+});
 
 export const isAdmin = (req, res, next) => {
   try {

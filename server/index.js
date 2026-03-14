@@ -1,25 +1,21 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import winston from 'winston';
 import rateLimit from 'express-rate-limit';
 import mongoose from 'mongoose';
+import { env } from './config/env.js';
 import { connectDB } from './database/db.js';
+import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/user.js';
 import courseRoutes from './routes/course.js';
 import adminRoutes from './routes/admin.js';
 import contactRoutes from './routes/contact.js';
-
-dotenv.config();
+import { errorHandler, notFound } from './middlewares/errorHandler.js';
 
 const app = express();
-const port = Number(process.env.PORT) || 5000;
+const port = env.port;
 const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  ...(process.env.FRONTEND_URLS || '')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean),
+  env.clientUrl,
   'http://localhost:5173',
 ].filter(Boolean);
 
@@ -62,12 +58,6 @@ const authLimiter = rateLimit({
   message: 'Too many attempts from this IP, please try again after 15 minutes.',
 });
 
-const verifyLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: 'Too many OTP attempts from this IP, please try again after 15 minutes.',
-});
-
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -77,25 +67,15 @@ const contactLimiter = rateLimit({
 // Routes
 app.use('/api/user/login', authLimiter);
 app.use('/api/user/register', authLimiter);
-app.use('/api/user/verify', verifyLimiter);
 app.use('/api/contact/submit', contactLimiter);
+app.use('/api/user', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', courseRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', contactRoutes);
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
-});
-
-// Global error handler
-app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  const message = err.message || 'Internal server error';
-  winston.error(message, { status, stack: err.stack });
-  res.status(status).json({ message });
-});
+app.use(notFound);
+app.use(errorHandler);
 
 const startServer = async () => {
   try {

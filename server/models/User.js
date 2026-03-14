@@ -17,6 +17,17 @@ const schema = new mongoose.Schema({
         required: true,
         select: false,
     },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    activationToken: {
+        type: String,
+        select: false,
+    },
+    activationTokenExpires: {
+        type: Date,
+    },
     phone: {
         type: String,
         required: false,
